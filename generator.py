@@ -13,7 +13,6 @@ class DataGenerator(keras.callbacks.Callback):
         self.batch_size = batch_size          #Batch size of Input
         self.max_text_len = max_text_len      #Maximum Text length of Labels
         
-#         self.n =len(self.img_dir)                           #Number of images in img_matrix
         self.n=n
         self.img_dir = img_dirpath[:self.n]     # images list
         self.indexes = list(range(self.n))   #List of indices for each image in img_matrix

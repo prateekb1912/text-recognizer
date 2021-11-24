@@ -1,5 +1,5 @@
-from keras.layers import Input, Conv2D, MaxPool2D, Dense,MaxPooling2D
-from keras.layers import AveragePooling2D, Flatten, Activation, Bidirectional
+from keras.layers import Input, Conv2D, Dense,MaxPooling2D
+from keras.layers import Flatten, Activation, Bidirectional
 from keras.layers import BatchNormalization, Dropout
 from keras.layers import Concatenate, Add, Multiply, Lambda
 from keras.layers import UpSampling2D, Reshape
@@ -8,10 +8,22 @@ from keras.layers import Reshape
 from keras.models import Model
 from keras.layers.recurrent import LSTM,GRU
 import tensorflow as tf
+from keras import backend as K
 
-from utils import *
+from utils import ctc_loss_function, letters
 
-def Image_text_recogniser_model_1(stage,drop_out_rate=0.35):
+#image height
+img_h=32
+#image width
+img_w=170
+#image Channels
+img_c=1
+# classes for softmax with number of letters +1 for blank space in ctc
+num_classes=len(letters)+1
+batch_size=64
+max_length=15 # considering max length of ground truths labels to be 15
+
+def textRecognizerModel(stage,drop_out_rate=0.35):
     """
     Builds the model by taking in the stage variable which specifes the stage,
     if the stage is training: model takes inputs required for computing ctc_batch_cost function
@@ -77,11 +89,14 @@ def Image_text_recogniser_model_1(stage,drop_out_rate=0.35):
     label_length = Input(name='label_length', shape=[1], dtype='int64') 
 
     #CTC loss function
-    loss_out = Lambda(ctc_loss_function, output_shape=(1,),name='ctc')([y_pred, labels, input_length, label_length]) #(None, 1)
+    loss_out = Lambda(ctc_loss_function, output_shape=(1,),name='ctc')([y_pred, labels, input_length, label_length])
 
     if stage=='train':
         return model_input,y_pred,Model(inputs=[model_input, labels, input_length, label_length], outputs=loss_out)
     else:
         return Model(inputs=[model_input], outputs=y_pred)  
 
-model_input,y_pred,img_text_recog = Image_text_recogniser_model_1('train')
+model_input,y_pred,img_text_recog = textRecognizerModel('train')
+
+test_func = K.function([model_input], [y_pred])
+img_text_recog.summary()
