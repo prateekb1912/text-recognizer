@@ -23,7 +23,7 @@ with open("annotations.txt", "r") as f:
         print(label)
 
         labels.append(label)
-        data.append(file)
+        data.append(img)
 
 data =  np.array(data, dtype='float32')
 labels = np.array(labels)
