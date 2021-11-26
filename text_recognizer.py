@@ -8,14 +8,9 @@ from keras.layers.recurrent import LSTM
 
 from utils import ctc_loss_function, letters
 
-img_h = 32
-img_w = 170
-img_c = 1
-
 num_classes = len(letters)+1
 batch_size = 64
 max_length = 15
-
 
 class TextRecognizerModel():
     """

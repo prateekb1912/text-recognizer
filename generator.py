@@ -1,9 +1,9 @@
 import keras
 import random
-from PIL import Image
+import cv2
 import numpy as np
 
-from .utils import encode_words_labels
+from utils import encode_words_labels
 
 class DataGenerator(keras.callbacks.Callback):
     def __init__(self, img_dirpath, img_w, img_h,
@@ -27,12 +27,12 @@ class DataGenerator(keras.callbacks.Callback):
         """
         print(self.n, " Image Loading start...")
         for i, img_file in enumerate(self.img_dir):
-            img = Image.open(img_file)
+            img = cv2.imread(img_file)
             img = img[:,:,1]                               #Extracting Single Channel Image
-            img = img.resize((self.img_w, self.img_h))
+            img = cv2.resize(img, (self.img_w, self.img_h))
             img = img /255
             self.imgs[i, :, :]= img
-            if i%10000==0:
+            if i%1000==0:
                 print("Loaded Images: ",i)
            
         print("Number of Texts matches with Total Number of Images :",len(self.texts) == self.n)
