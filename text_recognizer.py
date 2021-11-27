@@ -1,3 +1,4 @@
+from pandas.core.arrays.sparse import dtype
 from keras.models import Model
 from keras.layers import Input, Conv2D, Dense, MaxPooling2D
 from keras.layers import Activation, Bidirectional
@@ -5,30 +6,33 @@ from keras.layers import BatchNormalization, Dropout
 from keras.layers import Lambda
 from keras.layers import Reshape
 from keras.layers.recurrent import LSTM
+from tensorflow.keras.applications import MobileNetV2
 
 from utils import ctc_loss_function, letters
 
 num_classes = len(letters)+1
 batch_size = 64
-max_length = 15
+max_length = 25
+
 
 class TextRecognizerModel():
     """
         Builds the text recognizer model layer by layer
     """
 
-    def __init__(self, img_h, img_w, img_c):
+    def __init__(self, img_h, img_w):
         """
             Initializes the model with the image size passed as arguments
         """
-        self.input_shape = (img_h, img_w, img_c)
+        self.input_shape = (img_w, img_h, 1)
         self.labels = None
         self.label_length = 0
         self.input_length = 0
         self.loss = None
+        self.model = None
 
-        self.model_input = Input(shape=self.input_shape,
-                                 name='img_input')
+        self.model_input = Input(
+            shape=self.input_shape, name='img_input', dtype='float32')
 
         self.add_cnn_layers()
         self.reshape_model()
@@ -84,7 +88,7 @@ class TextRecognizerModel():
         """
             Reshape the model to transition from CNN to RNN
         """
-        self.model = Reshape(target_shape=((40, 1024)),
+        self.model = Reshape(target_shape=((42, 1024)),
                              name='reshape')(self.model)
         self.model = Dense(
             64, activation='relu', kernel_initializer='he_normal', name='dense1')(self.model)

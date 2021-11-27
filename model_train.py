@@ -1,8 +1,8 @@
 from keras import backend as K
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-
 from tensorflow.keras.optimizers import Adam
 
+import numpy as np
 
 from text_recognizer import TextRecognizerModel
 from utils import letters
@@ -22,12 +22,13 @@ max_length = 15
 LR = 1e-4
 EPOCHS = 8
 
-modelObj = TextRecognizerModel(img_h, img_w, img_c)
+modelObj = TextRecognizerModel(img_h, img_w)
 model_input, prediction, model = modelObj.train()
 
-# print(model.summary())
+print(model.summary())
 
 train_df = pd.read_csv('train.csv')
+
 train_paths = train_df['filename']
 train_labels = train_df['label']
 
@@ -49,13 +50,14 @@ train_gen = DataGenerator(
 )
 
 train_gen.build_data()
-train_batches = len(train_paths)/batch_size
 
 model.compile(loss={'ctc': lambda y_true, y_pred: y_pred},
               optimizer=optimizer)
 
-model.fit(
-    train
-    epochs = 1
+model.fit_generator(
+    generator = train_gen.next_batch(),
+    steps_per_epoch = int(train_gen.n/batch_size),
+    callbacks = [early_stop, model_chk_pt],
+    # validation_data = (valX, valY),
+    epochs = 5
 )
-    # callbacks = [early_stop, model_chk_pt]

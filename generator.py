@@ -7,7 +7,7 @@ from utils import encode_words_labels
 
 class DataGenerator(keras.callbacks.Callback):
     def __init__(self, img_dirpath, img_w, img_h,
-                 batch_size,n,output_labels,max_text_len=15):
+                 batch_size,n,output_labels,max_text_len=25):
         self.img_h = img_h                    #Image Height
         self.img_w = img_w                    #Image Width
         self.batch_size = batch_size          #Batch size of Input
@@ -58,12 +58,14 @@ class DataGenerator(keras.callbacks.Callback):
         """
         while True:
             X_data = np.ones([self.batch_size, self.img_w, self.img_h, 1])  #Single channel Gray Size Scale images for input
+            
             #Initilizing with -1 to aid for padding labels of different lengths
             Y_data = np.ones([self.batch_size, self.max_text_len])* -1        #Text labels for input
+           
            #input_length for CTC which is the number of time-steps of the RNN output
+            
             input_length = np.ones((self.batch_size, 1)) * 40
             label_length = np.zeros((self.batch_size, 1))                   #label length for CTC
-            source_str=[]                                                   #List to store Ground Truth Labels
             for i in range(self.batch_size):
                 img, text = self.next_data() #getting the image and text data pointed by current index
                                     #taking transpose of image
@@ -74,15 +76,13 @@ class DataGenerator(keras.callbacks.Callback):
                 lbl_len=len(label)
                 Y_data[i,0:lbl_len] = label #Storing the label till its length and padding others
                 label_length[i] = len(label)
-                source_str.append(text) #storing Ground Truth Labels which will be accessed as reference for calculating metrics
-            
         #Preparing the input for the Model
+            print(Y_data.shape)
             inputs = {
                 'img_input': X_data,  
                 'ground_truth_labels': Y_data,  
                 'input_length': input_length,  
-                'label_length': label_length,
-                'source_str': source_str  # used for visualization only
+                'label_length': label_length
             }
             #Preparing output for the Model and intializing to zeros
             outputs = {'ctc': np.zeros([self.batch_size])}  

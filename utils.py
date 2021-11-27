@@ -3,7 +3,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 #Letters present in the Label Text
-letters= '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+letters= '0123456789abcdefghijklmnopqrstuvwxyz'
 
 def encode_words_labels(word):
     """
