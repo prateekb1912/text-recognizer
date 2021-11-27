@@ -36,3 +36,39 @@ def ctc_loss_function(args):
     # I Tried by including these outputs but the results turned out to be very bad and got very low accuracies on prediction 
     y_pred = y_pred[:, 2:, :]
     return K.ctc_batch_cost(y_true, y_pred, input_length, label_length)   
+
+def decode_batch(test_func, word_batch):
+    """
+    Takes the Batch of Predictions and decodes the Predictions by Best Path Decoding and Returns the Output
+    """
+    out = test_func([word_batch])[0] #returns the predicted output matrix of the model
+    ret = []
+    for j in range(out.shape[0]):
+        out_best = list(np.argmax(out[j, 2:], 1))
+        out_best = [k for k, g in itertools.groupby(out_best)]
+        outstr = words_from_labels(out_best)
+        ret.append(outstr)
+    return ret
+
+def accuracies(actual_labels,predicted_labels,is_train):
+    """
+    Takes a List of Actual Outputs, predicted Outputs and returns their accuracy and letter accuracy across
+    all the labels in the list
+    """
+    accuracy=0
+    letter_acc=0
+    letter_cnt=0
+    count=0
+    for i in range(len(actual_labels)):
+        predicted_output=predicted_labels[i]
+        actual_output=actual_labels[i]
+        count+=1
+        for j in range(min(len(predicted_output),len(actual_output))):
+            if predicted_output[j]==actual_output[j]:
+                letter_acc+=1
+        letter_cnt+=max(len(predicted_output),len(actual_output))
+        if actual_output==predicted_output:
+            accuracy+=1
+    final_accuracy=np.round((accuracy/len(actual_labels))*100,2)
+    final_letter_acc=np.round((letter_acc/letter_cnt)*100,2)
+    return final_accuracy,final_letter_acc

@@ -77,7 +77,6 @@ class DataGenerator(keras.callbacks.Callback):
                 Y_data[i,0:lbl_len] = label #Storing the label till its length and padding others
                 label_length[i] = len(label)
         #Preparing the input for the Model
-            print(Y_data.shape)
             inputs = {
                 'img_input': X_data,  
                 'ground_truth_labels': Y_data,  

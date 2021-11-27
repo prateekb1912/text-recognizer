@@ -28,9 +28,13 @@ model_input, prediction, model = modelObj.train()
 print(model.summary())
 
 train_df = pd.read_csv('train.csv')
+val_df = pd.read_csv('val.csv')
 
 train_paths = train_df['filename']
 train_labels = train_df['label']
+
+val_paths = val_df['filename']
+val_labels = val_df['label']
 
 early_stop = EarlyStopping(
     monitor='val_loss', patience=2, restore_best_weights=True)
