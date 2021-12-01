@@ -1,3 +1,4 @@
+from numpy.lib.utils import source
 import keras
 import random
 import cv2
@@ -66,6 +67,7 @@ class DataGenerator(keras.callbacks.Callback):
             
             input_length = np.ones((self.batch_size, 1)) * 40
             label_length = np.zeros((self.batch_size, 1))                   #label length for CTC
+            source_str = []
             for i in range(self.batch_size):
                 img, text = self.next_data() #getting the image and text data pointed by current index
                                     #taking transpose of image
@@ -76,6 +78,7 @@ class DataGenerator(keras.callbacks.Callback):
                 lbl_len=len(label)
                 Y_data[i,0:lbl_len] = label #Storing the label till its length and padding others
                 label_length[i] = len(label)
+
         #Preparing the input for the Model
             inputs = {
                 'img_input': X_data,  

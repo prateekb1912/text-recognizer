@@ -2,7 +2,6 @@ from keras import backend as K
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
 
-import numpy as np
 
 from text_recognizer import TextRecognizerModel
 from utils import letters
@@ -53,15 +52,32 @@ train_gen = DataGenerator(
     train_labels
 )
 
+val_gen = DataGenerator(
+    val_paths,
+    img_w,
+    img_h,
+    batch_size,
+    len(val_paths),
+    val_labels
+)
+
 train_gen.build_data()
+
+test_func = K.function([model_input], [prediction])
+
+train_num_batches = int(train_gen.n/batch_size)
 
 model.compile(loss={'ctc': lambda y_true, y_pred: y_pred},
               optimizer=optimizer)
 
+
 model.fit_generator(
     generator = train_gen.next_batch(),
-    steps_per_epoch = int(train_gen.n/batch_size),
+    steps_per_epoch = train_num_batches,
+    epochs = 5,
     callbacks = [early_stop, model_chk_pt],
-    # validation_data = (valX, valY),
-    epochs = 5
+    validation_data = val_gen.next_batch(),
+    validation_steps = int(val_gen.n/batch_size)
 )
+
+model.save('model_weights.h5')

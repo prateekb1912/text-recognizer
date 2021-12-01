@@ -1,5 +1,7 @@
+import numpy as np
 from keras import backend as K
 import warnings
+import itertools
 warnings.filterwarnings("ignore")
 
 #Letters present in the Label Text
@@ -19,6 +21,7 @@ def words_from_labels(labels):
     converts the list of encoded integer labels to word strings like eg. [12,10,29] returns CAT 
     """
     txt=[]
+    print(labels)
     for ele in labels:
         if ele == len(letters): # CTC blank space
             txt.append("")

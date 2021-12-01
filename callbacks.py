@@ -1,4 +1,5 @@
 from utils import decode_batch, accuracies
+import keras
 
 class VizCallback(keras.callbacks.Callback):
     """

@@ -1,3 +1,5 @@
+from os import name
+from numpy.core.fromnumeric import shape
 from pandas.core.arrays.sparse import dtype
 from keras.models import Model
 from keras.layers import Input, Conv2D, Dense, MaxPooling2D
@@ -20,7 +22,7 @@ class TextRecognizerModel():
         Builds the text recognizer model layer by layer
     """
 
-    def __init__(self, img_h, img_w):
+    def __init__(self, img_h = 32, img_w = 170):
         """
             Initializes the model with the image size passed as arguments
         """
@@ -111,7 +113,7 @@ class TextRecognizerModel():
         # Ouput predicted text, take input actual label and their respective lengths for loss
         # computation
         self.prediction = Activation('softmax', name='softmax')(self.model)
-
+        
         self.labels = Input(name='ground_truth_labels', shape=[
             max_length], dtype='float32')
         self.input_length = Input(
@@ -127,3 +129,6 @@ class TextRecognizerModel():
     def train(self):
         return self.model_input, self.prediction, Model(inputs=[self.model_input, self.labels,
                                                                 self.input_length, self.label_length], outputs=self.loss)
+    
+    def predict(self):
+        return Model(inputs = [self.model_input], outputs = self.prediction)
