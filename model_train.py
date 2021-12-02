@@ -9,8 +9,8 @@ from generator import DataGenerator
 
 import pandas as pd
 
-img_h = 32
-img_w = 170
+img_h = 128
+img_w = 128
 img_c = 1
 
 num_classes = len(letters)+1
@@ -26,8 +26,8 @@ model_input, prediction, model = modelObj.train()
 
 print(model.summary())
 
-train_df = pd.read_csv('train.csv')
-val_df = pd.read_csv('val.csv')
+train_df = pd.read_csv('train.csv')[:5000]
+val_df = pd.read_csv('val.csv')[:1000]
 
 train_paths = train_df['filename']
 train_labels = train_df['label']

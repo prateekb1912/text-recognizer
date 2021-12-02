@@ -67,7 +67,6 @@ class DataGenerator(keras.callbacks.Callback):
             
             input_length = np.ones((self.batch_size, 1)) * 40
             label_length = np.zeros((self.batch_size, 1))                   #label length for CTC
-            source_str = []
             for i in range(self.batch_size):
                 img, text = self.next_data() #getting the image and text data pointed by current index
                                     #taking transpose of image

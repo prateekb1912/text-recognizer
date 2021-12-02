@@ -1,16 +1,16 @@
-import shutil
 import os
 
-RootDir1 = "90kDICT32px"
-TargetFolder = "Images"
-num_images= 0
+DIR = './90kDICT32px'
 
-for root, dirs, files in os.walk((os.path.normpath(RootDir1)), topdown=False):
-    if num_images > 60000:
+nums = 0
+
+for root, subdirectories, files in os.walk(DIR):
+    for file in files:
+        print(os.path.join(root, file))
+        with open("annotations.txt", "a") as f:
+            f.write(os.path.join(root, file)+"\n")
+            print(nums)
+            nums += 1
+    
+    if nums >= 60000:
         break
-    for name in files:
-        if name.endswith('.jpg'):
-            num_images += 1
-            print(f"Found {num_images}")
-            SourceFolder = os.path.join(root,name)
-            shutil.copy2(SourceFolder, TargetFolder) #copies csv to new folder

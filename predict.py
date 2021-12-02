@@ -4,6 +4,7 @@ import itertools
 
 import cv2
 import numpy as np
+import pandas as pd
 
 model = TextRecognizerModel()
 pred_model = model.predict()
@@ -36,7 +37,7 @@ def test_data_single_image_Prediction(model,test_img_path):
     """
     
     test_img=cv2.imread(test_img_path)
-    test_img_resized=cv2.resize(test_img,(32,170))
+    test_img_resized=cv2.resize(test_img,(128, 128))
     test_image=test_img_resized[:,:,1]
     test_image=np.expand_dims(test_image,axis=-1)
     test_image=np.expand_dims(test_image, axis=0)
@@ -50,4 +51,5 @@ def test_data_single_image_Prediction(model,test_img_path):
     predicted_output=decode_label(model_output)
     print("Predicted Text in the Image: ", predicted_output) 
 
-test_data_single_image_Prediction(pred_model, 'test.jpg')
+test_img = pd.read_csv('test.csv').iloc[0]
+test_data_single_image_Prediction(pred_model, test_img['filename'])

@@ -22,7 +22,7 @@ class TextRecognizerModel():
         Builds the text recognizer model layer by layer
     """
 
-    def __init__(self, img_h = 32, img_w = 170):
+    def __init__(self, img_h = 128, img_w = 128):
         """
             Initializes the model with the image size passed as arguments
         """
@@ -90,7 +90,7 @@ class TextRecognizerModel():
         """
             Reshape the model to transition from CNN to RNN
         """
-        self.model = Reshape(target_shape=((42, 1024)),
+        self.model = Reshape(target_shape=((128, 1024)),
                              name='reshape')(self.model)
         self.model = Dense(
             64, activation='relu', kernel_initializer='he_normal', name='dense1')(self.model)

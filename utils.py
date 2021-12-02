@@ -5,7 +5,7 @@ import itertools
 warnings.filterwarnings("ignore")
 
 #Letters present in the Label Text
-letters= '0123456789abcdefghijklmnopqrstuvwxyz'
+letters= '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def encode_words_labels(word):
     """

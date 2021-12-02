@@ -130,5 +130,10 @@ dmypy.json
 
 # Dataset folder
 Images/
+dataset/
 90kDICT32px/
 *.npy
+
+# Saved models
+*.hdf5
+*.h5
